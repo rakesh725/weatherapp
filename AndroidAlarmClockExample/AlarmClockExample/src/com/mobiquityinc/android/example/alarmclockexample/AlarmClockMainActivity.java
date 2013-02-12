@@ -38,14 +38,21 @@ import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-public class AlarmClockMainActivity extends Activity implements LocationListener {
+public class AlarmClockMainActivity extends Activity implements LocationListener
+     , TextWatcher
+
+{
+	
 	static final String TAG = AlarmClockMainActivity.class.getSimpleName();
     static final String PREFERENCES = "AlarmClock";
     private TextView mAmView, mPmView, mSecondsView;
@@ -61,6 +68,9 @@ public class AlarmClockMainActivity extends Activity implements LocationListener
     private TextView overallCondition;
     private TextView currentTemp;
     private TextView feelsLike;
+    private EditText zipcode;
+    private int currentZipcode = -1;
+    private String currentCity = null;
     
     
     private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
@@ -92,7 +102,9 @@ public class AlarmClockMainActivity extends Activity implements LocationListener
         overallCondition = (TextView)findViewById(R.id.overallCondition);
         currentTemp =  (TextView)findViewById(R.id.currentTemp);
         feelsLike =  (TextView)findViewById(R.id.feelsLike);
+        zipcode = (EditText) findViewById(R.id.zipcode);
         
+        zipcode.addTextChangedListener(this);
         mHandler = new Handler();
         //mHandler = new Handler(Looper.myLooper());
         //mHandler = new Handler(Looper.getMainLooper());
@@ -102,7 +114,6 @@ public class AlarmClockMainActivity extends Activity implements LocationListener
         Typeface fontFace = Typeface.createFromAsset(this.getAssets(), "Basicdots.TTF");
         mTimeDisplay.setTypeface(fontFace, Typeface.BOLD);
         mSecondsView.setTypeface(fontFace, Typeface.BOLD);
-
 	}
 	
 	@Override
@@ -369,10 +380,23 @@ public class AlarmClockMainActivity extends Activity implements LocationListener
 	Weather currentWeather;
 	private class GetCurrentWheather extends AsyncTask<Location, Void, Weather> {
 		protected Weather doInBackground(final Location... args) {
-			if (currentLocation == null)
-				return null;
-			String linkk = "http://api.wunderground.com/api/8885b6e346d54a79/conditions/q/"+
+			String linkk = null;
+			if (currentLocation != null)
+				linkk = "http://api.wunderground.com/api/8885b6e346d54a79/conditions/q/"+
 					currentLocation.getLatitude()+","+ currentLocation.getLongitude()+".json";
+			if(currentZipcode != -1) {
+				linkk = "http://api.wunderground.com/api/8885b6e346d54a79/conditions/q/"+
+						currentZipcode+".json";
+			}
+			if (currentCity != null) {
+				linkk = "http://api.wunderground.com/api/8885b6e346d54a79/conditions/q/MA/"+
+						currentCity+".json";
+				
+			}
+			Log.d(TAG,"linkk="+linkk);
+			if (linkk == null)
+					return null;
+			
 			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 			HttpGet request = new HttpGet(linkk);   
 			BufferedReader reader;
@@ -464,5 +488,41 @@ public class AlarmClockMainActivity extends Activity implements LocationListener
         		e.printStackTrace();
 			}
         }
+	}
+
+
+	@Override
+	public void afterTextChanged(Editable arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count,
+			int after) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count) {
+		 Log.d(TAG, "currentText="+s.toString());
+	     if (s.toString().length() >= 5) {
+	    	 try {
+	    		 if (s.toString().length() == 5) {
+	    			 currentZipcode = Integer.parseInt(s.toString());
+	    			 Log.d(TAG, "currentZipcode="+s.toString());
+	    			 new GetCurrentWheather().execute();
+	    		 }
+	    		 if (s.toString().length() >=6) {
+	    			 currentCity = s.toString();
+	    			 new GetCurrentWheather().execute();
+	    		 }
+	    	 } catch (NumberFormatException e) {
+	    		 // TODO Auto-generated catch block
+	    		 //e.printStackTrace();
+	    		 currentZipcode = -1;
+	    	 }	
+	     }
 	}
 }

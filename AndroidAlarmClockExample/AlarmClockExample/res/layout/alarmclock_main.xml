@@ -6,7 +6,17 @@
     android:background="@android:color/background_dark"
     tools:context=".AlarmClockMainActivity" >
 
+        <EditText 
+            android:id="@+id/zipcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="11dp"
+        android:hint="enter zip code for the weather"
+        android:layout_centerHorizontal="true"
+            />
     <RelativeLayout
+            android:layout_below="@id/zipcode"
         android:id="@+id/timeContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -91,13 +101,25 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="32dp"
         android:layout_marginTop="12dp" >
-
+        
+        <ImageView
+            android:id="@+id/conditionIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/currentTemp"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:visibility="gone"
+            android:src="@drawable/ic_launcher" />
+        
         <TextView
             android:id="@+id/overallCondition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/currentTemp"
-            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="9dp"
+            android:layout_toRightOf="@id/conditionIcon"
             android:gravity="center"
             android:includeFontPadding="false"
             android:text="Clear"
@@ -130,16 +152,7 @@
             android:textColor="@android:color/white"
             android:textSize="17sp" />
         
-                <ImageView
-            android:id="@+id/feelsLikeIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/currentTemp"
-            android:layout_marginLeft="9dp"
-            android:layout_toRightOf="@id/feelsLike"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            />
+
     </RelativeLayout>
 
     <ListView
