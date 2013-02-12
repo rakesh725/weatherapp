@@ -46,6 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/timeDisplay"
             android:layout_marginLeft="8dip"
+            android:layout_marginBottom="8dip"
             android:layout_toRightOf="@id/timeSeconds"
             android:orientation="vertical" >
 
@@ -58,7 +59,7 @@
                 android:text="AM"
                 android:textColor="@android:color/white"
                 android:textSize="27sp"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <TextView
                 android:id="@+id/pm"
@@ -69,7 +70,7 @@
                 android:text="PM"
                 android:textColor="@android:color/white"
                 android:textSize="27sp"
-                android:visibility="visible" />
+                android:visibility="gone" />
         </FrameLayout>
     </RelativeLayout>
     <View 
@@ -108,7 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="9dp"
-            android:layout_toRightOf="@id/overallCondition"
+            android:layout_toRightOf="@+id/feelsLike"
             android:gravity="bottom"
             android:includeFontPadding="false"
             android:text="14\u2109"
@@ -122,12 +123,23 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/currentTemp"
             android:layout_marginLeft="9dp"
-            android:layout_toRightOf="@id/currentTemp"
+            android:layout_toRightOf="@id/overallCondition"
             android:gravity="center"
             android:includeFontPadding="false"
             android:text="Feels like 11\u2109"
             android:textColor="@android:color/white"
             android:textSize="17sp" />
+        
+                <ImageView
+            android:id="@+id/feelsLikeIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/currentTemp"
+            android:layout_marginLeft="9dp"
+            android:layout_toRightOf="@id/feelsLike"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            />
     </RelativeLayout>
 
     <ListView
@@ -135,6 +147,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/weatherContainer"
-        android:layout_weight="1" />
+       />
 
 </RelativeLayout>

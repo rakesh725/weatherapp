@@ -73,7 +73,6 @@ public class AlarmClockMainActivity extends Activity implements LocationListener
         }
     };
     
-    
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -286,9 +285,8 @@ public class AlarmClockMainActivity extends Activity implements LocationListener
 	}
     
 	public void updateCurrentLocation(Location loc) throws IOException, IllegalArgumentException {
-		//Log.d(TAG, "updateCurrentLocation");
+		Log.d(TAG, "updateCurrentLocation");
 		if ((loc != null) && isBetterLocation(loc, currentLocation)) {
-		    //Log.d(TAG, "loc="+loc);
 		    currentLocation = loc;
 		}
 	}
@@ -299,8 +297,8 @@ public class AlarmClockMainActivity extends Activity implements LocationListener
 		for(String provider: providers) {
 		    Location lastKnownLocation = locationManager.getLastKnownLocation(provider);
 		    if (lastKnownLocation != null) {
-			    try {
-			        updateCurrentLocation(lastKnownLocation);
+			    try {updateCurrentLocation
+			        (lastKnownLocation);
 			    	break;
 		        } catch (IllegalArgumentException e) {
 			        // TODO Auto-generated catch block
@@ -371,6 +369,8 @@ public class AlarmClockMainActivity extends Activity implements LocationListener
 	Weather currentWeather;
 	private class GetCurrentWheather extends AsyncTask<Location, Void, Weather> {
 		protected Weather doInBackground(final Location... args) {
+			if (currentLocation == null)
+				return null;
 			String linkk = "http://api.wunderground.com/api/8885b6e346d54a79/conditions/q/"+
 					currentLocation.getLatitude()+","+ currentLocation.getLongitude()+".json";
 			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
@@ -386,6 +386,7 @@ public class AlarmClockMainActivity extends Activity implements LocationListener
 				}
 				JSONTokener tokener = new JSONTokener(builder.toString());
 				JSONObject finalResult = new JSONObject(tokener);
+				Log.d(TAG, finalResult.toString());
 				currentWeather = new Weather(finalResult.getJSONObject("current_observation"));
 				client.close();
 				return currentWeather;
@@ -414,6 +415,9 @@ public class AlarmClockMainActivity extends Activity implements LocationListener
 		updateWeather(currentWeather);
 	}
 	public void updateWeather(Weather result) {
+		if (result == null) {
+			return;
+		}
 		currentTemp.setText(""+result.currentTempInF+"\u2109");
 		overallCondition.setText(result.overallCondition);
 		feelsLike.setText("Feels like "+result.feelsLikeInF +"\u2109");
